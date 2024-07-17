@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func FindAllInputFiles(inputFolder string) []string {
@@ -20,6 +21,21 @@ func FindAllInputFiles(inputFolder string) []string {
 	return files
 }
 
+func GetFileContent(filePath string) ([][]string, error) {
+	file, err := os.Open(filePath)
+	defer file.Close()
+	if err != nil {
+		return nil, errors.New("ERROR: An eror occured when tried to opan a file")
+	}
+	result := [][]string{}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		result = append(result, strings.Split(scanner.Text(), "\t"))
+	}
+	// fmt.Println(result)
+	return result, nil
+}
+
 func PrintFileContent(filePath string) error {
 	file, err := os.Open(filePath)
 	defer file.Close()
@@ -28,7 +44,7 @@ func PrintFileContent(filePath string) error {
 	}
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		fmt.Println(strings.Split(scanner.Text(), "\t")[:])
 	}
 	return nil
 }
