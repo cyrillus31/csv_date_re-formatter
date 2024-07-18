@@ -11,33 +11,30 @@ import (
   "time"
 )
 
-var rowMap = map[rune]int{
-	'a': 0,
-	'b': 1,
-	'c': 2,
-	'd': 4,
-	'e': 5,
-	'f': 6,
-	'g': 7,
-	'h': 8,
-	'i': 9,
-	'j': 10,
-	'k': 11,
-	'l': 12,
-}
 
+func isInSlice(target int, slice *[]int) bool {
+  for _, value := range *slice {
+    if value == target {
+      return true
+    }
+  }
+  return false
+}
 
 type Table struct {
-	Date           string
-	Time           string
-	DateTime       string
-  DateTimeLayout string
-	RawTable [][]  string
-  DateRowNumber  int
+  Filename        string
+	Date            string
+	Time            string
+	DateTime        string
+  DateTimeLayout  string
+	RawTable        [][]string
+  DateRowNumber   int
+  RowNumberToKeep []int
 }
 
-func InitializeTable(tableContent [][]string) Table {
+func InitializeTable(filename string, tableContent [][]string) Table {
 	return Table{
+    Filename: filename,
 		Date:     "",
 		Time:     "",
 		DateTime: "",
@@ -46,25 +43,37 @@ func InitializeTable(tableContent [][]string) Table {
 	}
 }
 
-func (t *Table) DateConverter(inputDateTime string) (string, string) {
-  inputLayout := "2006-01-02 15:04:05" 
-  datetime, _ := time.Parse(inputLayout, inputDateTime)
-  t.Time = datetime.Format("15:04")
-  t.Date = datetime.Format("2/1/2006")
-  return t.Date, t.Time
-}
-
-func GetDateRowNumber() []string {
-	var inputFormat string
-	var result = []string{}
-	fmt.Print("Укажите букву столбца, который нужно отформатировать: ")
+func (t *Table) GetDateRowNumber() int {
+	fmt.Print("Укажите букву столбца с датой, который нужно отформатировать: ")
 	reader := bufio.NewReader(os.Stdin)
-	inputFormat, _ = reader.ReadString('\n')
-	inputFormat = strings.TrimSpace(inputFormat)
+  input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+  result := int(input[0] - 'a')
+  t.DateRowNumber = result
 	return result
 }
 
-func GetRowNumbers() []int {
+func (t *Table) ConvertData() [][]string {
+  var convertedData [][]string
+  for i := 0; i < len(t.RawTable); i++ {
+    row := t.RawTable[i]
+    var newRow []string
+    for index, value := range row {
+      if index == t.DateRowNumber {
+        date, time := DateConverter(value)
+        newRow = append(newRow, date, time)
+        continue
+      }
+      if isInSlice(index, &t.RowNumberToKeep) {
+        newRow = append(newRow, value)
+      }
+    convertedData = append(convertedData, newRow)
+    }
+  }
+  return convertedData
+}
+
+func (t *Table) GetRowNumbers() []int {
 	var input string
 	fmt.Print("Введите латинские буквы, соответствующие нужным столбцам:\n")
 	reader := bufio.NewReader(os.Stdin)
@@ -77,16 +86,27 @@ func GetRowNumbers() []int {
 		for _, element := range arr {
 			result = append(result, int(element[0]-'a'))
 		}
+    t.RowNumberToKeep = result
 		return result
 	}()
 
 }
 
+func DateConverter(inputDateTime string) (string, string) {
+  inputLayout := "2006-01-02 15:04:05" 
+  datetime, _ := time.Parse(inputLayout, inputDateTime)
+  time := datetime.Format("15:04")
+  date := datetime.Format("2/1/2006")
+  return date, time
+}
+
+
 func FindAllInputFiles(inputFolder string) []string {
 	files := []string{}
 	filepath.WalkDir(inputFolder, func(path string, d fs.DirEntry, err error) error {
-		if !d.IsDir() {
-			files = append(files, path)
+    fileName := d.Name()
+		if !d.IsDir() && fileName[0] != '.' {
+			files = append(files, fileName)
 		}
 		return nil
 	})
@@ -108,7 +128,7 @@ func GetFileContent(filePath string) ([][]string, error) {
 	return result, nil
 }
 
-func PrintFileContent(filePath string) error {
+func printFileContent(filePath string) error {
 	file, err := os.Open(filePath)
 	defer file.Close()
 	if err != nil {

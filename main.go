@@ -4,6 +4,7 @@ import (
 	// "fmt"
 
 	"fmt"
+	"path"
 	"time"
 
 	"github.com/cyrillus31/csv_date_re-formatter/utils"
@@ -13,16 +14,16 @@ const INPUT_FOLDER = "input_files/"
 const OUTPUT_FOLDER = "output_files/"
 
 func main() {
-	rowNumber := utils.GetRowNumbers()
-	fmt.Println(rowNumber)
 	time.Sleep(3 * time.Second)
 	files := utils.FindAllInputFiles(INPUT_FOLDER)
-	// fmt.Printf("%v\n", files)
+	fmt.Println(files)
 	for _, file := range files {
-		utils.PrintFileContent(file)
-		result, _ := utils.GetFileContent(file)
-		table := utils.InitializeTable(result)
-
+		fileContent, _ := utils.GetFileContent(path.Join(INPUT_FOLDER, file))
+		table := utils.InitializeTable(file, fileContent)
+    table.GetRowNumbers()
+    table.GetDateRowNumber()
+    newData := table.ConvertData()
+    fmt.Println(newData)
 	}
 
 }
