@@ -1,2 +1,12 @@
 # csv_date_re-formatter
-This project will allow you to change a format of data used in your csv file
+
+## Запуск
+
+1. Скачать репозиторий.
+2. Скомпилировать программу
+
+```golang 
+go build .
+
+```
+3. Запустить бинарник и следовать инструкциям. 

@@ -44,7 +44,7 @@ func InitializeTable(filename string, tableContent [][]string) Table {
 }
 
 func (t *Table) GetDateRowNumber() int {
-	fmt.Print("Укажите букву столбца с датой, который нужно отформатировать: ")
+	fmt.Print("Укажите букву столбца с датой, которую нужно отформатировать в итоговом файле:\n")
 	reader := bufio.NewReader(os.Stdin)
   input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
@@ -75,7 +75,7 @@ func (t *Table) ConvertData() [][]string {
 
 func (t *Table) GetRowNumbers() []int {
 	var input string
-	fmt.Print("Введите латинские буквы, соответствующие нужным столбцам:\n")
+	fmt.Print("Введите латинские буквы, соответствующие нужным в итоговом файле столбцам через пробел:\n")
 	reader := bufio.NewReader(os.Stdin)
 	input, _ = reader.ReadString('\n')
 	input = strings.Trim(input, " \n\t")
