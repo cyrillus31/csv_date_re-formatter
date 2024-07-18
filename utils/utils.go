@@ -25,11 +25,28 @@ var rowMap = map[rune]int{
 	'l': 12,
 }
 
+// func DateConverter(inputDate string, inputLayout string) string {
+//
+// }
+
+// func GetDateRowNumber() []string {
+// 	// var inputFormat string
+// 	// var result = []string{}
+// 	// fmt.Print("Введите формат входных данных: ")
+// 	// reader := bufio.NewReader(os.Stdin)
+// 	// inputFormat, _ = reader.ReadString('\n')
+// 	// inputFormat = strings.TrimSpace(inputFormat)
+// 	inputFormat
+//
+// 	return result
+// }
+
 func GetRowNumbers() []int {
 	var input string
 	fmt.Print("Введите латинские буквы, соответствующие нужным столбцам:\n")
 	reader := bufio.NewReader(os.Stdin)
 	input, _ = reader.ReadString('\n')
+	input = strings.Trim(input, " \n\t")
 	return func() []int {
 		var result = []int{}
 		arr := strings.Split(input, " ")
