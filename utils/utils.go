@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+  "time"
 )
 
 var rowMap = map[rune]int{
@@ -25,15 +26,14 @@ var rowMap = map[rune]int{
 	'l': 12,
 }
 
-// func DateConverter(inputDate string, inputLayout string) string {
-//
-// }
 
 type Table struct {
-	Date     string
-	Time     string
-	DateTime string
-	RawTable [][]string
+	Date           string
+	Time           string
+	DateTime       string
+  DateTimeLayout string
+	RawTable [][]  string
+  DateRowNumber  int
 }
 
 func InitializeTable(tableContent [][]string) Table {
@@ -42,7 +42,16 @@ func InitializeTable(tableContent [][]string) Table {
 		Time:     "",
 		DateTime: "",
 		RawTable: tableContent,
+    DateRowNumber: 0,
 	}
+}
+
+func (t *Table) DateConverter(inputDateTime string) (string, string) {
+  inputLayout := "2006-01-02 15:04:05" 
+  datetime, _ := time.Parse(inputLayout, inputDateTime)
+  t.Time = datetime.Format("15:04")
+  t.Date = datetime.Format("2/1/2006")
+  return t.Date, t.Time
 }
 
 func GetDateRowNumber() []string {
