@@ -54,21 +54,21 @@ func (t *Table) GetDateRowNumber() int {
 }
 
 func (t *Table) ConvertData() [][]string {
-  var convertedData [][]string
+  var convertedData = [][]string{}
   for i := 0; i < len(t.RawTable); i++ {
     row := t.RawTable[i]
-    var newRow []string
+    var newRow = []string{}
     for index, value := range row {
+      // fmt.Println(newRow)
       if index == t.DateRowNumber {
         date, time := DateConverter(value)
         newRow = append(newRow, date, time)
         continue
-      }
-      if isInSlice(index, &t.RowNumberToKeep) {
+      } else if isInSlice(index, &t.RowNumberToKeep) {
         newRow = append(newRow, value)
       }
-    convertedData = append(convertedData, newRow)
     }
+    convertedData = append(convertedData, newRow)
   }
   return convertedData
 }
@@ -125,7 +125,7 @@ func GetFileContent(filePath string) ([][]string, error) {
 		result = append(result, strings.Split(scanner.Text(), "\t"))
 	}
 	// fmt.Println(result)
-	return result, nil
+  return result[1:len(result)], nil
 }
 
 func printFileContent(filePath string) error {
