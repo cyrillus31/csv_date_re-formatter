@@ -29,17 +29,31 @@ var rowMap = map[rune]int{
 //
 // }
 
-// func GetDateRowNumber() []string {
-// 	// var inputFormat string
-// 	// var result = []string{}
-// 	// fmt.Print("Введите формат входных данных: ")
-// 	// reader := bufio.NewReader(os.Stdin)
-// 	// inputFormat, _ = reader.ReadString('\n')
-// 	// inputFormat = strings.TrimSpace(inputFormat)
-// 	inputFormat
-//
-// 	return result
-// }
+type Table struct {
+	Date     string
+	Time     string
+	DateTime string
+	RawTable [][]string
+}
+
+func InitializeTable(tableContent [][]string) Table {
+	return Table{
+		Date:     "",
+		Time:     "",
+		DateTime: "",
+		RawTable: tableContent,
+	}
+}
+
+func GetDateRowNumber() []string {
+	var inputFormat string
+	var result = []string{}
+	fmt.Print("Укажите букву столбца, который нужно отформатировать: ")
+	reader := bufio.NewReader(os.Stdin)
+	inputFormat, _ = reader.ReadString('\n')
+	inputFormat = strings.TrimSpace(inputFormat)
+	return result
+}
 
 func GetRowNumbers() []int {
 	var input string

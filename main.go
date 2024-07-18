@@ -21,7 +21,8 @@ func main() {
 	for _, file := range files {
 		utils.PrintFileContent(file)
 		result, _ := utils.GetFileContent(file)
-		fmt.Println(result)
+		table := utils.InitializeTable(result)
+
 	}
 
 }
