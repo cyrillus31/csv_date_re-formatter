@@ -55,6 +55,7 @@ if __name__ == "__main__":
     input_dir = path.abspath("input_files")
     output_dir = path.abspath("output_files")
     create_dirs(input_dir, output_dir)
+    input(f"Put all files you want to convert into:\n{input_dir}\n\nPress ENTER when ready.")
 
     for in_filepath, out_filepath in files_generator(input_dir, output_dir):
         try:
