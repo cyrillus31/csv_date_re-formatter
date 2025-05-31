@@ -1,38 +1,45 @@
 import os
-from directives import Directives
-from file_processer import FileProcesser
 
+class InterfaceQuestions:
+    """
+    Talks to the user
+    1. Put files into input_directory/
+    2. Loop:
+        Here is the first row...
+        Which columns containes {date|time|high|low|volume}?
+    """
+    def __init__(
+            self, 
+            input_dir: str = "input_dir", 
+            output_dir: str = "output_files"
+    ) -> None:
 
-class Interface:
-    def __init__(self, input_dir: str) -> None:
-        self.input_dir: str = input_dir
-        self._file: str = ""
-        self._fp: FileProcesser | None = None
-        self.default_order = ["date", "time", "open", "high", "low", "close", "volume"]
-        # self.desired_order: dict[str, int] = {
+        self._input_dir = input_dir
+        self._output_dir = output_dir
 
-    def pick_file(self) -> None:
+        # Create directories
+        if not os.path.exists(self._input_dir):
+            os.mkdir(self._input_dir)
 
-        root, dirs, files = next(os.walk(self.input_dir))
+        if not os.path.exists(self._output_dir):
+            os.mkdir(self._output_dir)
 
-        for i, file in enumerate(files):
-            print(f"{i+1}) {file}")
-        print()
+    def introduction(self) -> None:
+        if not os.path.exists(self._input_dir):
+            os.mkdir(self._input_dir)
 
-        self._file = files[int(input("Which file do you want to convert? Enter number: ")) - 1]
+        msg = f"Put files that you want to convert into '{self._input_dir}' directory. Press ENTER"
+        input(msg)
 
-        self._fp = FileProcesser(os.path.join(self.input_dir, self._file))
+    def map_responses(self, row: list[str], column_names: list[str]) -> dict[str, int]:
+        result = dict()
+        print(f"Here are all the rows:")
 
-        print(self._fp.get_first_line())
-        print()
+        for index, column_elem in enumerate(row):
+            print(f"{index+1} {column_elem}) ", end="\t")
 
-        answer = input("Does the first line containe data? y/n: ")
-        if "n" in answer.lower():
-            self._fp.skip_first_line = True
+        for column_name in column_names:
+            column_index = int(input(f"Which column is {column_name}? Enter a number")) - 1
+            result[column_name] = column_index
 
-    def which_column(self) -> None:
-
-    def setup(self) -> None:
-        self.pick_file()
-        print("Pick numbers that correspond to rows you want to have:")
-        
+        return result
